@@ -130,8 +130,8 @@ struct fuse_conn;
  * operations.
  */
 struct fuse_passthrough {
-       struct file *filp;
-       struct cred *cred;
+	struct file *filp;
+	struct cred *cred;
 };
 
 /** FUSE specific file data */
@@ -690,11 +690,11 @@ struct fuse_conn {
 	/** List of device instances belonging to this connection */
 	struct list_head devices;
 
-       /** IDR for passthrough requests */
-        struct idr passthrough_req;
+	/** IDR for passthrough requests */
+	struct idr passthrough_req;
 
-       /** Protects passthrough_req */
-       spinlock_t passthrough_req_lock;
+	/** Protects passthrough_req */
+	spinlock_t passthrough_req_lock;
 };
 
 static inline struct fuse_conn *get_fuse_conn_super(struct super_block *sb)
@@ -719,7 +719,6 @@ static inline u64 get_node_id(struct inode *inode)
 
 static inline void fuse_make_bad(struct inode *inode)
 {
-	remove_inode_hash(inode);
 	set_bit(FUSE_I_BAD, &get_fuse_inode(inode)->state);
 }
 
@@ -1024,12 +1023,13 @@ struct posix_acl;
 struct posix_acl *fuse_get_acl(struct inode *inode, int type);
 int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type);
 
-int fuse_passthrough_open(struct fuse_dev *fud,
-                         struct fuse_passthrough_out *pto);
+/* passthrough.c */
+int fuse_passthrough_open(struct fuse_dev *fud, u32 lower_fd);
 int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
-                          struct fuse_open_out *openarg);
+			   struct fuse_open_out *openarg);
 void fuse_passthrough_release(struct fuse_passthrough *passthrough);
 ssize_t fuse_passthrough_read_iter(struct kiocb *iocb, struct iov_iter *to);
 ssize_t fuse_passthrough_write_iter(struct kiocb *iocb, struct iov_iter *from);
+ssize_t fuse_passthrough_mmap(struct file *file, struct vm_area_struct *vma);
 
 #endif /* _FS_FUSE_I_H */
