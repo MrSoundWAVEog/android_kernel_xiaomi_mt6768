@@ -80,11 +80,11 @@ lto_lds()
 	fi
 
 	${srctree}/scripts/generate_initcall_order.pl \
-		built-in.a ${KBUILD_VMLINUX_LIBS} \
+		${KBUILD_VMLINUX_INIT} ${KBUILD_VMLINUX_MAIN} ${KBUILD_VMLINUX_LIBS} \
 		> .tmp_lto.lds
 
 	if [ -n "${CONFIG_MODVERSIONS}" ]; then
-		for a in built-in.a ${KBUILD_VMLINUX_LIBS}; do
+		for a in ${KBUILD_VMLINUX_INIT} ${KBUILD_VMLINUX_MAIN} ${KBUILD_VMLINUX_LIBS}; do
 			for o in $(${AR} t $a); do
 				if [ -f ${o}.symversions ]; then
 					cat ${o}.symversions >> .tmp_lto.lds
